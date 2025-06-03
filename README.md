@@ -2,7 +2,7 @@
 
 このWikiは個人で運営、編集している攻略サイトです。
 
-[Tinkerlandsの公式画像](./public/images/tinkerlands.jpg)
+![Tinkerlandsの公式画像](./public/images/tinkerlands.jpg)
 
 ## 設立した経緯
 
