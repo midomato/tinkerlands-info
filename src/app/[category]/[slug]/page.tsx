@@ -1,54 +1,40 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
 import matter from 'gray-matter'
 import { remark } from 'remark'
 import html from 'remark-html'
 
 export async function generateStaticParams() {
-  const contentDir = path.join(process.cwd(), 'content')
+  const base = path.join(process.cwd(), 'content')
+  const categories = await fs.readdir(base)
 
-  const categories = fs
-    .readdirSync(contentDir, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name)
-
-  const paths = categories.flatMap((category) => {
-    const dirPath = path.join(contentDir, category)
-    return fs
-      .readdirSync(dirPath)
-      .filter((file) => file.endsWith('.md'))
-      .map((filename) => ({
-        category,
-        slug: filename.replace('.md', ''),
-      }))
-  })
-
-  return paths
+  return (
+    await Promise.all(
+      categories.map(async (category) => {
+        const files = await fs.readdir(path.join(base, category))
+        return files
+          .filter(f => f.endsWith('.md'))
+          .map(file => ({
+            category,
+            slug: file.replace(/\.md$/, ''),
+          }))
+      })
+    )
+  ).flat()
 }
 
-type PageProps = {
-  params: {
-    category: string
-    slug: string
-  }
-}
+export default async function Page({ params }: { params: Promise<{ category: string; slug: string }> }) {
+  const { category, slug } = await params
 
-export default async function Page({ params }: PageProps) {
-  const filePath = path.join(process.cwd(), 'content', params.category, `${params.slug}.md`)
-  const fileContent = fs.readFileSync(filePath, 'utf8')
-
-  const { data, content } = matter(fileContent)
+  const filePath = path.join(process.cwd(), 'content', category, `${slug}.md`)
+  const raw = await fs.readFile(filePath, 'utf8')
+  const { data, content } = matter(raw)
   const processed = await remark().use(html).process(content)
-  const htmlContent = processed.toString()
 
   return (
     <main className="max-w-screen-md mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-4">{data.title}</h1>
-      <p className="text-muted-foreground">{data.category}</p>
-      {data.icon && (
-        <img src={data.icon} alt={data.title} className="w-20 h-20 my-4" />
-      )}
-      <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+      <h1 className="text-3xl font-bold mb-6">{data.title}</h1>
+      <article className="prose" dangerouslySetInnerHTML={{ __html: processed.toString() }} />
     </main>
   )
 }
