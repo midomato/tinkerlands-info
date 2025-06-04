@@ -48,14 +48,14 @@ export default function Home() {
             <h3 className="bg-blue-500 text-white text-sm px-3 py-2 rounded-t">お役立ち情報</h3>
             <ul className="border border-blue-500 rounded-b text-sm divide-y">
               <li className="p-2"><Link href="/items">アイテム</Link></li>
-              <li className="p-2"><Link href="/guides/money">お金稼ぎ</Link></li>
+              <li className="p-2"><Link href="/items">お金稼ぎ</Link></li>
             </ul>
           </section>
           <section>
             <h3 className="bg-blue-500 text-white text-sm px-3 py-2 rounded-t">道具</h3>
             <ul className="border border-blue-500 rounded-b text-sm divide-y">
-              <li className="p-2"><Link href="/items/magic-axe">魔法の斧</Link></li>
-              <li className="p-2"><Link href="/items/magic-hammer">魔法のつるはし</Link></li>
+              <li className="p-2"><Link href="/items">魔法の斧</Link></li>
+              <li className="p-2"><Link href="/items">魔法のつるはし</Link></li>
             </ul>
           </section>
         </aside>

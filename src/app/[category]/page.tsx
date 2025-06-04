@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import matter from 'gray-matter'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export async function generateStaticParams() {
   const contentDir = path.join(process.cwd(), 'content')
@@ -19,6 +20,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   try {
     files = (await fs.readdir(dirPath)).filter((f) => f.endsWith('.md'))
   } catch (err) {
+    console.error(err)
     return <div className="p-10 text-center text-red-500">カテゴリが存在しません</div>
   }
 
@@ -48,7 +50,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             className="p-4 border rounded-xl hover:shadow-md transition"
           >
             {icon && (
-              <img src={icon} alt={title} className="w-16 h-16 mb-2" />
+              <Image src={icon} alt={title} width={64} height={64} className="mb-2" />
             )}
             <h2 className="text-xl font-semibold">{title}</h2>
           </Link>
