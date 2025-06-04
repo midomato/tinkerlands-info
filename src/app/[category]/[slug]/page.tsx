@@ -26,7 +26,7 @@ export async function generateStaticParams() {
   return paths
 }
 
-export default async function Page({ params }: { params: { category: string; slug: string } }) {
+export default async function Page({ params }: any) {
   const filePath = path.join(process.cwd(), 'content', params.category, `${params.slug}.md`)
   const fileContent = fs.readFileSync(filePath, 'utf8')
 
